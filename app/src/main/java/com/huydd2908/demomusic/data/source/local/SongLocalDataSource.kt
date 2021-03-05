@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import com.huydd2908.demomusic.data.model.Song
 import com.huydd2908.demomusic.data.source.SongDataSource.*
 
@@ -34,7 +33,6 @@ class SongLocalDataSource(context: Context) : Local {
                 songs.add(Song(it))
             }
         }
-        Log.e("getSongsFromLocal", songs.size.toString())
         return songs
     }
 

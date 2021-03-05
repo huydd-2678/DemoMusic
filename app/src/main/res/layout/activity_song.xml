@@ -9,4 +9,100 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <View
+        android:id="@+id/viewControl"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/purple_200"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="H, 4.5:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/viewControl" />
+
+    <ImageView
+        android:id="@+id/imageControlThumbnail"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/dp_8"
+        android:background="@drawable/background_thumbnail"
+        android:contentDescription="@string/text_thumbnail"
+        android:scaleType="center"
+        android:src="@drawable/ic_song"
+        app:layout_constraintBottom_toBottomOf="@id/viewControl"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="@id/viewControl"
+        app:layout_constraintTop_toBottomOf="@id/seekBar" />
+
+    <TextView
+        android:id="@+id/textControlTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="@dimen/sp_18"
+        app:layout_constraintEnd_toStartOf="@id/buttonControlPlayPause"
+        app:layout_constraintStart_toEndOf="@id/imageControlThumbnail"
+        app:layout_constraintTop_toTopOf="@id/imageControlThumbnail" />
+
+    <TextView
+        android:id="@+id/textControlArtist"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintEnd_toEndOf="@id/textControlTitle"
+        app:layout_constraintStart_toStartOf="@id/textControlTitle"
+        app:layout_constraintTop_toBottomOf="@id/textControlTitle" />
+
+    <ImageButton
+        android:id="@+id/buttonControlPlayPause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/text_description_play_pause"
+        android:src="@drawable/ic_pause_black_36dp"
+        app:layout_constraintBottom_toBottomOf="@id/imageControlThumbnail"
+        app:layout_constraintEnd_toStartOf="@id/buttonControlNext"
+        app:layout_constraintTop_toTopOf="@id/imageControlThumbnail" />
+
+    <ImageButton
+        android:id="@+id/buttonControlNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/text_description_next"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_skip_next_black_36dp"
+        app:layout_constraintBottom_toBottomOf="@id/imageControlThumbnail"
+        app:layout_constraintEnd_toEndOf="@id/viewControl"
+        app:layout_constraintTop_toTopOf="@id/imageControlThumbnail" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupControl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="
+            viewControl,
+            buttonControlNext,
+            buttonControlPlayPause,
+            textControlTitle,
+            imageControlThumbnail,
+            textControlArtist,
+            seekBar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

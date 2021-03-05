@@ -10,16 +10,18 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.huydd2908.demomusic.R
 import com.huydd2908.demomusic.data.model.Song
 
-class SongService : Service(), SongControl, MediaPlayer.OnCompletionListener {
+class SongService : Service(), MediaPlayer.OnCompletionListener {
     private var remoteViews: RemoteViews? = null
-    private var mediaPlayer: MediaPlayer? = null
+    var mediaPlayer: MediaPlayer? = null
     private var songs = mutableListOf<Song>()
     private var index = 0
+    private var songNotificationControl: SongNotificationControl? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -34,6 +36,10 @@ class SongService : Service(), SongControl, MediaPlayer.OnCompletionListener {
 
     override fun onBind(intent: Intent?): IBinder = SongBinder(this)
 
+//    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+//        return START_NOT_STICKY
+//    }
+
     class SongBinder(private val service: SongService) : Binder() {
         fun getService(): SongService = service
     }
@@ -43,6 +49,10 @@ class SongService : Service(), SongControl, MediaPlayer.OnCompletionListener {
             release()
         }
         this.songs = songs
+    }
+
+    fun setCallback(songControl: SongNotificationControl) {
+        this.songNotificationControl = songControl
     }
 
     private fun createRemoteViews() {
@@ -97,14 +107,21 @@ class SongService : Service(), SongControl, MediaPlayer.OnCompletionListener {
                     } else {
                         start()
                     }
+                    songNotificationControl?.onPlayPause()
                 }
-                ACTION_NEXT -> change(1)
-                ACTION_PREVIOUS -> change(-1)
+                ACTION_NEXT -> {
+                    change(1)
+                    songNotificationControl?.onChange()
+                }
+                ACTION_PREVIOUS -> {
+                    change(-1)
+                    songNotificationControl?.onChange()
+                }
             }
         }
     }
 
-    override fun create(position: Int) {
+    fun create(position: Int) {
         index = position
         release()
         mediaPlayer = MediaPlayer.create(
@@ -115,42 +132,45 @@ class SongService : Service(), SongControl, MediaPlayer.OnCompletionListener {
         mediaPlayer?.setOnCompletionListener(this)
     }
 
-    override fun start() {
+    fun start() {
         mediaPlayer?.start()
         createNotification()
     }
 
-    override fun pause() {
+    fun pause() {
         mediaPlayer?.pause()
         createNotification()
     }
 
-    override fun stop() {
-        mediaPlayer?.stop()
-    }
-
-    override fun release() {
+    fun release() {
         mediaPlayer?.release()
     }
 
-    override fun getDuration(): Int? = mediaPlayer?.duration
+    fun getDuration(): Int? = mediaPlayer?.duration
 
-    override fun getCurrentPosition(): Int? = mediaPlayer?.currentPosition
+    fun getCurrentPosition(): Int? = mediaPlayer?.currentPosition
 
-    override fun getTitle(): String {
+    fun getTitle(): String {
         if (songs.size > index) {
             return songs[index].title
         }
         return ""
     }
 
-    override fun isPlaying(): Boolean = mediaPlayer?.isPlaying == true
+    fun getArtist(): String = songs[index].artist
 
-    override fun seekTo(position: Int) {
+    fun isPlaying(): Boolean {
+        if (mediaPlayer != null) {
+            return mediaPlayer?.isPlaying == true
+        }
+        return false
+    }
+
+    fun seekTo(position: Int) {
         mediaPlayer?.seekTo(position)
     }
 
-    override fun change(value: Int) {
+    fun change(value: Int) {
         index += value
         if (index < 0) {
             index = songs.size - 1
@@ -162,10 +182,14 @@ class SongService : Service(), SongControl, MediaPlayer.OnCompletionListener {
 
     override fun onCompletion(mp: MediaPlayer?) {
         change(1)
+        songNotificationControl?.onChange()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        mediaPlayer?.stop()
+        mediaPlayer?.release()
+        Log.e("onDestroy", "onDestroy")
         unregisterReceiver(receiver)
     }
 

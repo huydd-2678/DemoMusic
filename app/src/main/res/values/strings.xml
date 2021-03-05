@@ -2,5 +2,8 @@
     <string name="app_name">DemoMusic</string>
 
     <string name="text_thumbnail">Thumbnail</string>
-    <string name="text_notification_close">Close</string>
+    <string name="text_description_close">Close</string>
+    <string name="text_description_play_pause">Play Pause</string>
+    <string name="text_description_next">Next</string>
+    <string name="text_description_previous">Previous</string>
 </resources>
